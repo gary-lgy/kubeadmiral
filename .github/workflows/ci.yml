@@ -1,0 +1,77 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - $default-branch
+    tags:
+      - v*
+  pull_request:
+
+# TODO: do we need this?
+# permissions:
+#   contents: read # for actions/checkout to fetch code
+
+# TODO: coverage
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        go-version:
+          - "1.19"
+          - "1.20"
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ matrix.go-version }}
+
+      - name: Build
+        run: make manager
+
+      - name: Test
+        run: make test
+
+  lint:
+    # TODO: do we need this?
+    # permissions:
+    #   pull-requests: read # for golangci/golangci-lint-action to fetch pull requests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-go@v4
+        with:
+          go-version: "1.19"
+          cache: false
+
+      - uses: golangci/golangci-lint-action@v3
+        with:
+          version: v1.52.2
+          only-new-issues: true
+          args: >
+            --timeout=5m
+            --max-issues-per-linter=0
+            --max-same-issues=0
+            --uniq-by-line=false
+            --whole-files
+
+  verify-codegen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-go@v4
+        with:
+          go-version: "1.19"
+
+      - run: |
+          make generate -B
+          git diff --exit-code && exit 0
+          echo "Codegen is not up to date. Please run 'make generate' and commit the changes." >&2
+          exit 1

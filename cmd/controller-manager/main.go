@@ -30,7 +30,7 @@ import (
 )
 
 func main() {
-	opts := options.NewOptions()
+		opts := options.NewOptions()
 	flags := pflag.NewFlagSet(os.Args[0], pflag.ExitOnError)
 	opts.AddFlags(flags, app.KnownControllers(), app.ControllersDisabledByDefault())
 

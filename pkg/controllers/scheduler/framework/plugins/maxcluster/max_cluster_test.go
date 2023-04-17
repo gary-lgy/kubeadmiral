@@ -59,7 +59,7 @@ func TestMaxClusterSelectClusters(t *testing.T) {
 					Score:   1,
 				},
 			},
-			expectedCluster: []string{"foo"},
+			expectedCluster: []string{"bar"},
 			expectedResult:  framework.NewResult(framework.Success),
 		},
 		{

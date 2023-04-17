@@ -9,7 +9,7 @@ import (
 	"k8s.io/client-go/tools/cache"
 )
 
-// FederatedClusterLister helps list FederatedClusters.
+// XXXX FederatedClusterLister helps list FederatedClusters.
 // All objects returned here must be treated as read-only.
 type FederatedClusterLister interface {
 	// List lists all FederatedClusters in the indexer.
